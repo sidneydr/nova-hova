@@ -1,0 +1,13 @@
+<aura:component implements="force:lightningQuickActionWithoutHeader,force:hasRecordId" >
+    <aura:html tag="style">
+        .slds-modal__container{
+        width: 55%;
+        max-width: 60rem;
+        }
+        .modal-body{
+        height : 500px !important;
+        max-height: 600px !important;
+        }
+    </aura:html>
+    <c:createInvoice recordId="{!v.recordId}"/>
+</aura:component>

@@ -1,0 +1,24 @@
+<template>
+    <lightning-card title="Edit Products" icon-name="standard:opportunity">
+        <div class="slds-m-around_large">
+            <!-- <template if:true={oppLines.data}> 
+                  data={oppLines.data}
+            -->
+            <template if:true={oppLines}>
+                <lightning-datatable
+                    key-field="id"
+                    data={oppLines}
+                    columns={columns}
+                    onsave={handleSave}
+                    draft-values={draftValues}>
+                </lightning-datatable>
+            </template>
+            <template if:true={error}>
+                <p>{oppLines.error}</p>
+            </template>
+        </div>
+    </lightning-card>
+    <div>
+        {loadMoreStatus}
+    </div>    
+</template>

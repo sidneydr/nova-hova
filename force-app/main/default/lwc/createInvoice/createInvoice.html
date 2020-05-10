@@ -1,0 +1,132 @@
+<template>
+    <lightning-card title="Create Invoice" icon-name="standard:opportunity">
+        <lightning-record-edit-form object-api-name={childObjectApiName}>
+            <div class="c-container">
+                <!--
+                <lightning-layout vertical-align="stretch" multiple-rows="true" class="x-large">
+                    <lightning-layout-item flexibility="auto" padding="around-small" class="custom-box">
+                        -->
+                <lightning-layout horizontal-align="spread">
+                    <lightning-layout-item padding="around-small" size="6">
+                        <lightning-input-field field-name={targetFieldApiName} value='' onchange={handleChange}></lightning-input-field>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" size="6">
+                        <label class="slds-form-element__label" for="form-element-03">Tax Type</label>
+                                <div class="slds-select_container" style="width:auto">
+                                    <select class="slds-select" id="select-01" onchange={handleTaxChange}>
+                                        <!--<option value="">---None---</option> //Shows the default value -->
+                                        <!--iterate all picklist values from wrapper list using for:each loop-->
+                                            <template for:each={taxTypeValues.data} for:item="picklistItem">
+                                            <option key={picklistItem.svalue} value={picklistItem.svalue}>
+                                                {picklistItem.slabel}
+                                            </option>
+                                        </template>
+                                    </select>
+                                </div>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+            <div class="c-container">
+                <lightning-layout horizontal-align="spread">
+                    <lightning-layout-item padding="around-small" size="6">
+                        <lightning-input-field field-name='Reference__c' value='' onchange={handleRefChange}></lightning-input-field>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" size="6">
+                        <lightning-input-field field-name='Remarks__c' value='' onchange={handleRemChange}></lightning-input-field>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+        </lightning-record-edit-form>
+ 
+        <!-- Original coding 
+        <div>
+            <lightning-record-edit-form object-api-name={childObjectApiName}>
+                <lightning-input-field field-name={targetFieldApiName} label="Billing to Account" value='' onchange={handleChange}></lightning-input-field>
+                <lightning-input-field field-name='Reference__c' label="Reference" value='' onchange={handleRefChange}></lightning-input-field>
+                <lightning-input-field field-name='Remarks__c' label="Remarks" value='' onchange={handleRemChange}></lightning-input-field>
+            </lightning-record-edit-form>
+        </div>
+    
+    <label class="slds-form-element__label" for="select-02">Tax Type</label>
+      <div class="slds-form-element__control">
+        <lightning-layout-item padding="around-small">
+            <div class="slds-select_container" style="width:150px">
+                <select class="slds-select" id="select-02" onchange={handleTaxChange}>
+                        <template for:each={taxTypeValues.data} for:item="picklistItem">
+                        <option key={picklistItem.svalue} value={picklistItem.svalue}>
+                            {picklistItem.slabel}
+                        </option>
+                    </template>
+                </select>
+            </div>
+        </lightning-layout-item>
+    </div>
+        -->
+        <!-- <label class="slds-form-element__label" for="form-element-01">Form Label</label> -->
+        <div style="height: 200px;">
+            <template if:true={oppLines}>
+                <lightning-datatable
+                        key-field="id"
+                        data={oppLines}
+                        columns={columns}
+                        onrowselection={selectedRowsEvent}
+                        selected-rows={preSelectedRows} 
+                        resize-column-disabled=true>    
+                </lightning-datatable>
+            </template>
+            <template if:true={error}>
+                <p>{oppLines.error}</p>
+            </template>
+        </div>
+          <!-- 05-05-20 -->
+          <lightning-layout>
+              <lightning-layout-item size="7" class="left-align">
+                <!-- empty section -->
+              </lightning-layout-item>
+              <lightning-layout-item size="4" class="right-align">
+                <div class="slds-m-around--medium" style="width: 30rem;">
+                    <article class="slds-tile">
+                        <h3 class="slds-tile__title slds-truncate" title="Record details">Summary</h3>
+                        <div class="slds-tile__detail">
+                            <div class="slds-region_narrow" style="width:500px">
+                                <dl class="slds-dl_horizontal">
+                                  <dt class="slds-dl_horizontal__label">Currency:</dt>
+                                  <dd class="slds-dl_horizontal__detail"><lightning-formatted-rich-text value={currencyResult}></lightning-formatted-rich-text></dd>
+                                  <dt class="slds-dl_horizontal__label">Discount Amount:</dt>
+                                  <dd class="slds-dl_horizontal__detail"><lightning-formatted-number value={currentResult1} format-style="currency" currency-code='USD'></lightning-formatted-number></dd>
+                                  <dt class="slds-dl_horizontal__label">Invoice Total:</dt>
+                                  <dd class="slds-dl_horizontal__detail"><lightning-formatted-number value={currentResult2} format-style="currency" currency-code='USD'></lightning-formatted-number></dd>
+                                </dl>
+                              </div>
+                            <!--
+                            <dl class="slds-list_horizontal slds-wrap">
+                                <dt class="slds-item_label slds-text-color_weak slds-truncate" title="CurrencyIso">Currency:</dt>
+                                <dd class="slds-item_label slds-text-color_weak slds-truncate">
+                                    <lightning-formatted-rich-text value={currencyResult}></lightning-formatted-rich-text>
+                                </dd>
+                                <dt class="slds-item_label slds-text-color_weak slds-truncate" title="Discount">Discount Amount:</dt>
+                                <dd class="slds-item_detail slds-truncate">       
+                                    <lightning-formatted-number value={currentResult1} format-style="currency" currency-code='USD'></lightning-formatted-number>
+                                </dd>
+                                <dt class="slds-item_label slds-text-color_weak slds-truncate" title="Balance">Invoice Total:</dt>
+                                <dd class="slds-item_detail slds-truncate">
+                                    <lightning-formatted-number value={currentResult2} format-style="currency" currency-code='USD'></lightning-formatted-number>
+                                </dd>
+                            </dl>
+                            -->
+                        </div>
+                    </article>
+                </div>
+             </lightning-layout-item>
+          </lightning-layout>
+          <lightning-layout>
+            <lightning-layout-item size="10" class="left-align">
+              <!-- empty section -->
+            </lightning-layout-item>
+            <lightning-layout-item size="3" class="right-align">
+                <lightning-button label="Confirm" onclick={handleSave}></lightning-button>
+            </lightning-layout-item>
+         </lightning-layout>  
+        
+    </lightning-card>
+</template>
